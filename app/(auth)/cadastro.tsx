@@ -3,6 +3,7 @@ import { View, TextInput, Button, Alert, StyleSheet } from 'react-native'
 import { gql } from 'graphql-request'
 import { gqlClient } from '../../lib/api'
 import { useAuth } from '../../hooks/authContext'
+import { router } from 'expo-router'
 
 const REGISTER_MUTATION = gql`
   mutation Register($username: String!, $email: String!, $password: String!) {
@@ -48,11 +49,15 @@ export default function CadastroScreen() {
         throw new Error('Erro ao registrar')
       }
 
-      await login(data.register.jwt) // 🔥 login automático após cadastro
+      await login(data.register.jwt)
     } catch (err: any) {
       console.error(err)
       Alert.alert('Erro', err?.message || 'Erro ao registrar')
     }
+  }
+
+  const goToLogin = () => {
+    router.replace('/(auth)/login')
   }
 
   return (
@@ -60,7 +65,9 @@ export default function CadastroScreen() {
       <TextInput placeholder="Nome de usuário" onChangeText={setUsername} style={styles.input} />
       <TextInput placeholder="Email" onChangeText={setEmail} autoCapitalize="none" style={styles.input} />
       <TextInput placeholder="Senha" secureTextEntry onChangeText={setPassword} style={styles.input} />
-      <Button title="Cadastrar e Entrar" onPress={handleCadastro} />
+      <Button title="Cadastrar" onPress={handleCadastro} />
+      <View style={{ marginVertical: 10 }} />
+      <Button title="Login" onPress={goToLogin} color="#888" />
     </View>
   )
 }
