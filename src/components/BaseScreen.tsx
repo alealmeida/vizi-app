@@ -1,28 +1,19 @@
-import { View, SafeAreaView, ViewProps, StyleSheet } from 'react-native';
-import { ReactNode } from 'react';
-import { theme } from '@/styles/theme';
+import { View, YStack } from 'tamagui'
+import { ReactNode } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-interface Props extends ViewProps {
-  children: ReactNode;
+interface Props {
+  children: ReactNode
 }
 
-export default function BaseScreen({ children, ...rest }: Props) {
+export default function BaseScreen({ children }: Props) {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.inner} {...rest}>
-        {children}
+    <SafeAreaView style={{ flex: 1 }}>
+      <View flex={1} backgroundColor="$background">
+        <YStack flex={1} paddingHorizontal="$4">
+          {children}
+        </YStack>
       </View>
     </SafeAreaView>
-  );
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  inner: {
-    flex: 1,
-    paddingHorizontal: theme.spacing.lg,
-  },
-});

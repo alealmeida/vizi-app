@@ -1,6 +1,16 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "module": "ESNext",
+    "target": "ES6",
+    "jsx": "react-native",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "types": ["react", "react-native"],
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
@@ -17,5 +27,6 @@
       "@assets/*": ["src/assets/*"]
     }
   },
-  "include": ["./src", "App.tsx"]
+  "include": ["./src", "App.tsx"],
+  "exclude": ["node_modules"]
 }
