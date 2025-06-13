@@ -1,35 +1,50 @@
 {
   "name": "vizi-app",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+<<<<<<< HEAD
     "test": "jest"
+=======
+    "lint": "eslint 'src/**/*.{ts,tsx}'"
+>>>>>>> 788e211 (ultimo commit estável)
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^7.1.6",
     "@react-navigation/native-stack": "^7.3.10",
     "@reduxjs/toolkit": "^2.7.0",
+    "@tamagui/core": "^1.126.4",
     "axios": "^1.9.0",
     "expo": "~52.0.46",
     "expo-status-bar": "~2.0.1",
     "graphql": "^16.11.0",
     "graphql-request": "^7.1.2",
+<<<<<<< HEAD
     "react": "^18.2.0",
     "react-native": "^0.72.0",
+=======
+    "react": "18.3.1",
+    "react-dom": "^19.1.0",
+    "react-native": "0.76.9",
+>>>>>>> 788e211 (ultimo commit estável)
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
-    "react-native-safe-area-context": "4.12.0",
+    "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "~4.4.0",
-    "react-redux": "^9.2.0"
+    "react-native-svg": "^15.11.2",
+    "react-redux": "^9.2.0",
+    "styled-components": "^6.1.17",
+    "tamagui": "^1.126.4"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/metro-config": "~0.19.0",
+<<<<<<< HEAD
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.2.0",
     "@types/jest": "^29.5.14",
@@ -39,6 +54,14 @@
     "jest": "^30.0.0",
     "react-test-renderer": "18.3.1",
     "ts-jest": "^29.3.4",
+=======
+    "@tamagui/babel-plugin": "^1.126.4",
+    "@tamagui/config": "^1.126.4",
+    "@types/react": "~18.3.12",
+    "@types/react-native": "^0.73.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+>>>>>>> 788e211 (ultimo commit estável)
     "typescript": "^5.8.3"
   },
   "private": true,

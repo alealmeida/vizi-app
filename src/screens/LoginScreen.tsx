@@ -1,4 +1,4 @@
-import { Text, View, Input, Button } from 'tamagui'
+import { View } from 'tamagui'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
@@ -6,19 +6,22 @@ import { loginUser } from '@/api/auth/login'
 import { saveSession } from '@/utils/sessionStorage'
 import { setCredentials } from '@/features/userSession/userSessionSlice'
 import BaseScreen from '@/components/BaseScreen'
+import { Text } from '@/components/Text'
+import { Input } from '@/components/Input'
+import { Button } from '@/components/Button'
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
-  const navigation = useNavigation<any>();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const navigation = useNavigation<any>()
 
   const handleLogin = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const res = await loginUser(email, password);
-      await saveSession(res.jwt, res.user);
+      const res = await loginUser(email, password)
+      await saveSession(res.jwt, res.user)
       dispatch(
         setCredentials({
           token: res.jwt,
@@ -28,27 +31,29 @@ export default function LoginScreen() {
             email: res.user.email,
           },
         })
-      );
+      )
     } catch {
-      alert('Email ou senha inválidos.');
+      alert('Email ou senha inválidos.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <BaseScreen>
-      <Text style={styles.title}>Bem-vindo ao Vizi</Text>
+      <Text size="xl" weight="bold" color="$primary" textAlign="center" marginBottom="$6">
+        Bem-vindo ao Vizi
+      </Text>
 
-      <View style={styles.form}>
-        <ViziInput
+      <View gap="$4" width="100%">
+        <Input
           placeholder="Email"
           keyboardType="email-address"
           autoCapitalize="none"
           value={email}
           onChangeText={setEmail}
         />
-        <ViziInput
+        <Input
           placeholder="Senha"
           secureTextEntry
           value={password}
@@ -56,22 +61,21 @@ export default function LoginScreen() {
         />
       </View>
 
-      <View style={styles.buttonWrapper}>
-        <ViziButton
-          title="Entrar"
-          loading={loading}
-          onPress={handleLogin}
-          variant="filled"
-        />
+      <View marginTop="$6" width="100%">
+        <Button onPress={handleLogin} disabled={loading}>
+          <Text weight="bold" color="$background">
+            Entrar
+          </Text>
+        </Button>
       </View>
 
-      <View style={styles.buttonWrapper}>
-        <ViziButton
-          title="Cadastre-se"
-          onPress={() => navigation.navigate('Register')}
-          variant="outlined"
-        />
+      <View marginTop="$6" width="100%">
+        <Button variant="outlined" onPress={() => navigation.navigate('Register')}>
+          <Text weight="bold" color="$primary">
+            Cadastre-se
+          </Text>
+        </Button>
       </View>
     </BaseScreen>
-  );
+  )
 }

@@ -3,6 +3,15 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
+      'transform-inline-environment-variables',
+      [
+        '@tamagui/babel-plugin',
+        {
+          config: './tamagui.config.ts',
+          components: ['tamagui', '@components/Text', '@components/Input', '@components/Button'],
+          logTimings: true,
+        },
+      ],
       [
         'module-resolver',
         {
@@ -24,5 +33,6 @@ module.exports = function (api) {
       ],
       'react-native-reanimated/plugin',
     ],
+    
   };
 };
