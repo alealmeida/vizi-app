@@ -1,14 +1,11 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { loginUser } from '@/api/auth/login';
-import { saveSession } from '@/utils/sessionStorage';
-import { setCredentials } from '@/features/userSession/userSessionSlice';
-import BaseScreen from '@/components/BaseScreen';
-import ViziInput from '@/components/ViziInput';
-import ViziButton from '@/components/ViziButton';
-import { theme } from '@/styles/theme';
+import { Text, View, Input, Button } from 'tamagui'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
+import { loginUser } from '@/api/auth/login'
+import { saveSession } from '@/utils/sessionStorage'
+import { setCredentials } from '@/features/userSession/userSessionSlice'
+import BaseScreen from '@/components/BaseScreen'
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -78,21 +75,3 @@ export default function LoginScreen() {
     </BaseScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: theme.fontSize.xxl,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-    textAlign: 'center',
-    marginBottom: theme.spacing.lg,
-  },
-  form: {
-    gap: theme.spacing.md,
-    width: '100%',
-  },
-  buttonWrapper: {
-    marginTop: theme.spacing.lg,
-    width: '100%',
-  },
-});

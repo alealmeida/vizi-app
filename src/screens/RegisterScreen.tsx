@@ -82,21 +82,3 @@ export default function RegisterScreen() {
     </BaseScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: theme.fontSize.xl,
-    fontWeight: 'bold',
-    color: theme.colors.primary,
-    textAlign: 'center',
-    marginBottom: theme.spacing.lg,
-  },
-  form: {
-    gap: theme.spacing.md,
-    width: '100%',
-  },
-  buttonWrapper: {
-    marginTop: theme.spacing.lg,
-    width: '100%',
-  },
-});
