@@ -41,6 +41,7 @@ export default function ViziButton({
       accessibilityRole="button"
       disabled={isDisabled}
       style={containerStyle}
+      testID="vizi-button-touchable" // Added testID
       {...rest}
     >
       {loading ? (
