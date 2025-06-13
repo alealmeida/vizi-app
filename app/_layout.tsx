@@ -4,11 +4,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../src/store'; // Assuming RootState is exported from your store
 import { useEffect } from 'react';
 
-// Note: This is a placeholder for where login is now handled.
-// If Login is outside Expo Router (e.g. in React Navigation), this redirect won't work as expected.
-// The ideal solution depends on how Expo Router and React Navigation are integrated.
-const LOGIN_ROUTE = '/'; // Defaulting to '/' as app/(auth)/login is removed.
-
 export default function RootLayout() {
   // AuthProvider removed, Redux Provider is expected to be at a higher level (e.g. App.tsx)
   return <ProtectedRoutes />;
@@ -18,30 +13,22 @@ function ProtectedRoutes() {
   const segments = useSegments();
   const router = useRouter();
 
-  const { token, isLoading, user } = useSelector((state: RootState) => ({
+  const { token, isLoading } = useSelector((state: RootState) => ({
     token: state.userSession.token,
-    isLoading: state.userSession.isLoading, // Assuming an isLoading state for session restoration
-    user: state.userSession.user,
+    isLoading: state.userSession.isLoading,
   }));
 
   useEffect(() => {
-    if (isLoading) return; // Still loading session information
+    if (isLoading) return;
 
-    const inAuthGroup = segments[0] === '(auth)'; // This group is being removed
-
-    // If there's no token (not authenticated) and not already trying to go to a auth-related screen
-    // (though (auth) group is removed, this logic is kept for structure)
-    // Redirect to where login is handled.
-    if (!token && !inAuthGroup) {
-      // router.replace was used. If LOGIN_ROUTE is not an expo-router route, this will be an issue.
-      // For now, keeping the pattern but acknowledging LOGIN_ROUTE needs to be valid for expo-router.
-      router.replace(LOGIN_ROUTE);
-    } else if (token && inAuthGroup) {
-      // If authenticated and somehow ended up in an (auth) group page (which shouldn't exist)
-      router.replace('/(tabs)'); // Redirect to the main app area
+    // This check is mostly a cleanup for any lingering state or deep link
+    // that might point to the old (auth) structure.
+    const inOldAuthGroupFormat = segments[0] === '(auth)';
+    if (token && inOldAuthGroupFormat) {
+      router.replace('/(tabs)'); // Or your main authenticated route
     }
-    // If authenticated and not inAuthGroup, stay.
-    // If not authenticated and inAuthGroup (e.g. on the login screen itself), stay.
+    // No explicit redirect to login here, as RootNavigator handles that.
+    // If !token, RootNavigator should not have rendered this component.
   }, [segments, token, isLoading, router]);
 
   if (isLoading) {
@@ -52,14 +39,14 @@ function ProtectedRoutes() {
     );
   }
 
-  // If there is a token, or if we are on the login route itself, render the layout.
-  // This allows children routes to be rendered.
-  // If !token and not on LOGIN_ROUTE, the useEffect above should have redirected.
-  // This condition might need adjustment based on actual LOGIN_ROUTE and app structure.
-  if (!token && segments.join('/') !== LOGIN_ROUTE.replace(/^\//, '')) {
-     // If not authenticated and not on the login page (and not loading), show spinner
-     // This prevents rendering children routes that might be protected, while waiting for redirect.
-     // Alternatively, return null or a dedicated "Access Denied" or "Redirecting" component.
+  // If RootNavigator has done its job, we should have a token here if this component is rendered.
+  // If for some reason token is null (e.g. race condition or error in logic elsewhere),
+  // rendering children (Stack) could expose protected routes.
+  // However, RootNavigator is the primary gate.
+  // For safety, we can keep a check, but it indicates a problem elsewhere if hit.
+  if (!token) {
+    // This case should ideally not be reached if RootNavigator is working.
+    // Showing a spinner or a minimal view while RootNavigator (presumably) corrects the navigation.
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />
@@ -67,8 +54,8 @@ function ProtectedRoutes() {
     );
   }
 
+  // If authenticated and not loading, render the Expo Router Stack navigator
   // const isPrivateGroup = segments[0] === '(tabs)' || segments[0] === 'perfil';
-
   return (
     <Stack
       screenOptions={{
