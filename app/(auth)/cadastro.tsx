@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { View, TextInput, Button, Alert, StyleSheet } from 'react-native'
 import { gql } from 'graphql-request'
-import { gqlClient } from '../../lib/api'
+import { gqlClient } from '@/config/graphqlClient'
 import { useAuth } from '../../hooks/authContext'
 import { router } from 'expo-router'
 
