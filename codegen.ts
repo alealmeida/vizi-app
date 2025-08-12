@@ -1,3 +1,5 @@
+/// <reference types="node" />
+// codegen.ts
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
@@ -5,14 +7,15 @@ const config: CodegenConfig = {
   documents: 'src/graphql/documents/**/*.graphql',
   generates: {
     'src/graphql/__generated__/types.ts': {
-      plugins: [
-        'typescript',
-        'typescript-operations',
-        'typed-document-node'
-      ],
+      plugins: ['typescript', 'typescript-operations', 'typed-document-node'],
       config: {
         skipTypename: false,
-        maybeValue: 'T | null'
+        maybeValue: 'T | null',
+        scalars: {
+          DateTime: 'string',
+          Decimal: 'number',
+          JSON: 'any'
+        }
       }
     }
   }

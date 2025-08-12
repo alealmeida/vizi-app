@@ -1,0 +1,13 @@
+fragment PostDetailFields on Post {
+  documentId
+  titulo
+  conteudo
+  createdAt
+  data_publicacao
+  preco
+  # tipo_post  # adicione de volta quando o enum estiver limpo
+  condominio { documentId nome }
+  criador_post { documentId username email }
+  produto { documentId }       # se quiser usar depois
+  # denuncias { id }     # reativar quando permissões estiverem OK
+}

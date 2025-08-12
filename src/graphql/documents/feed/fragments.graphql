@@ -1,5 +1,22 @@
+# Campos base que já usamos
 fragment PostFields on Post {
   documentId
   titulo
-  createdAt
+  createdAt        # timestamps do Strapi (fallback p/ data_publicacao)
+  data_publicacao  # se existir, preferimos este no UI
+}
+
+fragment PostExpanded on Post {
+  conteudo
+  # tipo_post          # <- REMOVIDO até limpar/ajustar enum
+  escopo_visibilidade
+  nivel_visibilidade
+  status_post
+  tipo_negociacao
+  preco
+
+  condominio { documentId nome }
+  criador_post { documentId username email }
+
+  # denuncias { id }   # <- REMOVIDO até ajustar permissão
 }

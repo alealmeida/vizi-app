@@ -1,0 +1,5 @@
+query GetPostByDocumentId($documentId: ID!) {
+  posts(filters: { documentId: { eq: $documentId } }) {
+    ...PostDetailFields
+  }
+}

@@ -1,60 +1,94 @@
-// src/components/PostList.tsx
-import React from 'react'
-import { FlatList, View, Text, StyleSheet } from 'react-native'
-import PostCard from './PostCard'
+import React, { memo, useCallback } from 'react';
+import {
+  FlatList,
+  View,
+  Text,
+  StyleSheet,
+  RefreshControl,
+  ListRenderItem,
+} from 'react-native';
+import PostCard from '@shared/components/layout/PostCard';
+import type {
+  PostFieldsFragment,
+  PostExpandedFragment,
+} from '@graphql/__generated__/types';
 
-interface PostItem {
-  id: string
-  title: string
-  image: string
-  type: string
-  author: string
-}
+type PostItem = (PostFieldsFragment & Partial<PostExpandedFragment>) | null;
 
-interface PostListProps {
-  data: PostItem[]
-  onPressItem: (item: PostItem) => void
-  emptyMessage?: string
-}
+type Props = {
+  posts: PostItem[];
+  loading?: boolean;
+  refreshing?: boolean;
+  onRefresh?: () => void;
+  onEndReached?: () => void;
+  onPressItem?: (post: PostItem) => void;
+  ListHeaderComponent?: React.ReactElement | null;
+  footerCountLabel?: (count: number) => string;
+  emptyMessage?: string;
+  contentPadding?: number;
+};
 
-export default function PostList({ data, onPressItem, emptyMessage }: PostListProps) {
-  if (!data || data.length === 0) {
+function PostList({
+  posts,
+  loading = false,
+  refreshing = false,
+  onRefresh,
+  onEndReached,
+  onPressItem,
+  ListHeaderComponent,
+  footerCountLabel = (c) => `Itens: ${c}`,
+  emptyMessage = 'Sem posts.',
+  contentPadding = 16,
+}: Props) {
+  const keyExtractor = useCallback(
+    (p: PostItem, index: number) =>
+      String(p?.documentId ?? `${p?.titulo ?? 'post'}-${index}`),
+    []
+  );
+
+  const renderItem: ListRenderItem<PostItem> = useCallback(
+    ({ item }) => <PostCard post={item} onPress={() => onPressItem?.(item)} />,
+    [onPressItem]
+  );
+
+  if (!loading && posts.length === 0) {
     return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>{emptyMessage || 'Nenhum item encontrado.'}</Text>
+      <View style={[styles.emptyContainer, { padding: contentPadding }]}>
+        {ListHeaderComponent}
+        <Text style={styles.emptyText}>{emptyMessage}</Text>
       </View>
-    )
+    );
   }
 
   return (
     <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.listContainer}
-      ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-      renderItem={({ item }) => (
-        <PostCard
-          title={item.title}
-          image={item.image}
-          type={item.type}
-          author={item.author}
-          onPress={() => onPressItem(item)}
-        />
-      )}
+      data={posts}
+      keyExtractor={keyExtractor}
+      renderItem={renderItem}
+      contentContainerStyle={{
+        padding: contentPadding,
+        paddingBottom: 32,
+        paddingTop: ListHeaderComponent ? 8 : contentPadding,
+      }}
+      ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={
+        <Text style={styles.footer}>{footerCountLabel(posts.length)}</Text>
+      }
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} />
+        ) : undefined
+      }
+      onEndReachedThreshold={0.4}
+      onEndReached={onEndReached}
     />
-  )
+  );
 }
 
+export default memo(PostList);
+
 const styles = StyleSheet.create({
-  listContainer: {
-    paddingBottom: 20,
-  },
-  emptyContainer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  emptyText: {
-    color: '#888',
-    fontSize: 16,
-  },
-})
+  emptyContainer: { flex: 1, alignItems: 'center', gap: 8 },
+  emptyText: { color: '#666', fontSize: 16 },
+  footer: { textAlign: 'center', marginTop: 8, opacity: 0.6 },
+});
