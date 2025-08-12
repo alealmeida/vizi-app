@@ -4,30 +4,35 @@
     "strict": true,
     "noImplicitAny": true,
     "module": "ESNext",
-    "target": "ES6",
+    "target": "ES2020",
+    "lib": ["ES2020"],
     "jsx": "react-native",
-    "allowJs": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "types": ["react", "react-native"],
-    "baseUrl": "./",
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    "types": ["react", "react-native", "node", "jest"],
+
+    // raiz lógica dos imports
+    "baseUrl": "./src",
+
+    // NOVOS aliases (v2)
     "paths": {
-      "@/*": ["src/*"],
-      "@store": ["src/store.ts"],
-      "@components/*": ["src/components/*"],
-      "@screens/*": ["src/screens/*"],
-      "@navigation/*": ["src/navigation/*"],
-      "@api/*": ["src/api/*"],
-      "@features/*": ["src/features/*"],
-      "@graphql/*": ["src/graphql/*"],
-      "@styles/*": ["src/styles/*"],
-      "@config/*": ["src/config/*"],
-      "@utils/*": ["src/utils/*"],
-      "@assets/*": ["src/assets/*"]
-    },
-    "types": ["node", "jest"]
+      "@/*": ["*"],
+
+      "@app/*": ["app/*"],
+      "@modules/*": ["modules/*"],
+      "@shared/*": ["shared/*"],
+      "@graphql": ["graphql"],
+      "@graphql/*": ["graphql/*"],
+      "@store": ["store/index.ts"],
+      "@store/*": ["store/*"],
+      "@assets/*": ["assets/*"]
+    }
   },
-  "include": ["./src", "App.tsx"],
+  "include": ["src", "src/types/graphql.d.ts"],
   "exclude": ["node_modules"]
 }

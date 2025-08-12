@@ -3,36 +3,23 @@ module.exports = function (api) {
   return {
     presets: ['babel-preset-expo'],
     plugins: [
-      'transform-inline-environment-variables',
-      [
-        '@tamagui/babel-plugin',
-        {
-          config: './tamagui.config.ts',
-          components: ['tamagui', '@components/Text', '@components/Input', '@components/Button'],
-          logTimings: true,
-        },
-      ],
       [
         'module-resolver',
         {
           root: ['./src'],
+          extensions: ['.ts', '.tsx', '.js', '.json'],
           alias: {
             '@': './src',
-            '@components': './src/components',
-            '@screens': './src/screens',
-            '@navigation': './src/navigation',
-            '@api': './src/api',
-            '@features': './src/features',
+            '@app': './src/app',
+            '@modules': './src/modules',
+            '@shared': './src/shared',
             '@graphql': './src/graphql',
-            '@styles': './src/styles',
-            '@config': './src/config',
-            '@utils': './src/utils',
-            '@assets': './src/assets',
-          },
-        },
+            '@store': './src/store',
+            '@assets': './src/assets'
+          }
+        }
       ],
-      'react-native-reanimated/plugin',
-    ],
-    
+      'react-native-reanimated/plugin'
+    ]
   };
 };

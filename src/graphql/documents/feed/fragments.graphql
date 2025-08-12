@@ -1,0 +1,5 @@
+fragment PostFields on Post {
+  documentId
+  titulo
+  createdAt
+}
