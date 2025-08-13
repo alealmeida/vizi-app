@@ -1,9 +1,9 @@
+# usa só PostFields
 query ListPosts($page: Int = 1, $pageSize: Int = 10) {
   posts(
     pagination: { page: $page, pageSize: $pageSize }
     sort: ["createdAt:desc"]
   ) {
     ...PostFields
-    ...PostExpanded
   }
 }

@@ -1,13 +1,26 @@
+# src/graphql/documents/post/fragments.graphql
 fragment PostDetailFields on Post {
   documentId
   titulo
   conteudo
   createdAt
   data_publicacao
+
+  # 🔹 transação / negócio / status
+  tipo_post
+  tipo_negociacao
   preco
-  # tipo_post  # adicione de volta quando o enum estiver limpo
-  condominio { documentId nome }
+  status_post
+
+  # 🔹 visibilidade
+  escopo_visibilidade
+  nivel_visibilidade
+  restrito_para
+
+  # 🔹 relacionamentos mínimos
+  condominio   { documentId nome }
   criador_post { documentId username email }
-  produto { documentId }       # se quiser usar depois
-  # denuncias { id }     # reativar quando permissões estiverem OK
+
+  # opcional p/ futuro
+  produto { documentId }
 }

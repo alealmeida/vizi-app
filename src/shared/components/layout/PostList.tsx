@@ -7,13 +7,10 @@ import {
   RefreshControl,
   ListRenderItem,
 } from 'react-native';
-import PostCard from '@shared/components/layout/PostCard';
-import type {
-  PostFieldsFragment,
-  PostExpandedFragment,
-} from '@graphql/__generated__/types';
+import PostCard, { type PostCardProps } from '@shared/components/layout/PostCard';
+import type { PostFieldsFragment } from '@graphql/__generated__/types';
 
-type PostItem = (PostFieldsFragment & Partial<PostExpandedFragment>) | null;
+type PostItem = (PostFieldsFragment & { conteudo?: string | null }) | null;
 
 type Props = {
   posts: PostItem[];
@@ -26,6 +23,7 @@ type Props = {
   footerCountLabel?: (count: number) => string;
   emptyMessage?: string;
   contentPadding?: number;
+  showExcerptInCard?: PostCardProps['showExcerpt'];
 };
 
 function PostList({
@@ -39,6 +37,7 @@ function PostList({
   footerCountLabel = (c) => `Itens: ${c}`,
   emptyMessage = 'Sem posts.',
   contentPadding = 16,
+  showExcerptInCard = true,
 }: Props) {
   const keyExtractor = useCallback(
     (p: PostItem, index: number) =>
@@ -47,8 +46,14 @@ function PostList({
   );
 
   const renderItem: ListRenderItem<PostItem> = useCallback(
-    ({ item }) => <PostCard post={item} onPress={() => onPressItem?.(item)} />,
-    [onPressItem]
+    ({ item }) => (
+      <PostCard
+        post={item}
+        onPress={() => onPressItem?.(item)}
+        showExcerpt={showExcerptInCard}
+      />
+    ),
+    [onPressItem, showExcerptInCard]
   );
 
   if (!loading && posts.length === 0) {
@@ -71,13 +76,9 @@ function PostList({
         paddingTop: ListHeaderComponent ? 8 : contentPadding,
       }}
       ListHeaderComponent={ListHeaderComponent}
-      ListFooterComponent={
-        <Text style={styles.footer}>{footerCountLabel(posts.length)}</Text>
-      }
+      ListFooterComponent={<Text style={styles.footer}>{footerCountLabel(posts.length)}</Text>}
       refreshControl={
-        onRefresh ? (
-          <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} />
-        ) : undefined
+        onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} /> : undefined
       }
       onEndReachedThreshold={0.4}
       onEndReached={onEndReached}
