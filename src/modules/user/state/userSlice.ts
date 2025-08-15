@@ -1,6 +1,7 @@
 // src/features/user/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { UserData } from '@shared/types/user';
+import type { RootState } from '@/store';
 
 export type UserState = {
   profile: UserData | null;
@@ -48,5 +49,10 @@ export const {
   updateUserField,
   resetUserError,
 } = slice.actions;
+
+// Selectors
+export const selectUserProfile = (s: RootState) => s.user.profile;
+export const selectCondominioNome = (s: RootState) => s.user.profile?.condominio?.nome ?? null;
+export const selectTipoUsuario = (s: RootState) => s.user.profile?.tipo_usuario ?? 'visitante';
 
 export default slice.reducer;

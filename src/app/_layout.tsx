@@ -7,11 +7,13 @@ import { store, persistor } from '@store';
 import { Slot, useSegments, useRouter } from 'expo-router';
 import { useAppSelector } from '@store/hooks';
 import { setAuthToken as setGqlToken } from '@shared/lib/graphqlClient';
+import { selectAuthToken } from '@store/selectors';
+import { DSProvider } from '@ds/theme/provider';
 
 function AuthGateInner() {
   const router = useRouter();
   const segments = useSegments(); // ex: ['(tabs)', 'feed'] | ['(modals)', 'post', '123']
-  const token = useAppSelector((s) => s.auth.token);
+  const token = useAppSelector(selectAuthToken);
 
   // Mantém token do GraphQL client em sincronia
   useEffect(() => {
@@ -27,8 +29,10 @@ function AuthGateInner() {
   const atRoot = !inAuth && !inTabs && !inModals;
 
   useEffect(() => {
-    // logs úteis (opcional)
-    console.log('[AuthGate]', { token: !!token, segments, group, atRoot });
+    // logs úteis (apenas em dev)
+    if (__DEV__) {
+      console.log('[AuthGate]', { token: !!token, segments, group, atRoot });
+    }
     if (!token && (inTabs || inModals || atRoot)) {
       router.replace('/(auth)/login');
     } else if (token && (inAuth || atRoot)) {
@@ -43,7 +47,9 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AuthGateInner />
+        <DSProvider>
+          <AuthGateInner />
+        </DSProvider>
       </PersistGate>
     </Provider>
   );

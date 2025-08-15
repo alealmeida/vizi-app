@@ -30,8 +30,14 @@
       "@graphql/*": ["graphql/*"],
       "@store": ["store/index.ts"],
       "@store/*": ["store/*"],
-      "@assets/*": ["assets/*"]
-    }
+      "@assets/*": ["assets/*"],
+      "@ds/*": ["design-system/*"],
+      "@ds": ["design-system/index.ts"]
+    },
+
+    // TS strictness extra
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true
   },
   "include": ["src", "src/types/graphql.d.ts"],
   "exclude": ["node_modules"]

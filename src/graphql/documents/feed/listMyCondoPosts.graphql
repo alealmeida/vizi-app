@@ -1,0 +1,13 @@
+# Posts do meu condomínio
+query ListMyCondoPosts($condominioId: ID!, $page: Int = 1, $pageSize: Int = 10) {
+  posts(
+    filters: {
+      condominio: { documentId: { eq: $condominioId } }
+      status_post: { eq: "ativo" }
+    }
+    pagination: { page: $page, pageSize: $pageSize }
+    sort: ["data_publicacao:desc", "createdAt:desc"]
+  ) {
+    ...PostFields
+  }
+}

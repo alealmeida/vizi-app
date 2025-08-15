@@ -7,9 +7,9 @@ import * as z from 'zod';
 import { Link } from 'expo-router';
 
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import BaseScreen from '@shared/components/layout/BaseScreen';
-import Input from '@shared/components/ui/Input';
-import Button from '@shared/components/ui/Button';
+import AuthBaseScreen from '@shared/components/layout/AuthBaseScreen';
+import FormInput from '@shared/forms/FormInput';
+import Button from '@ds/components/atoms/Button';
 import ErrorMessage from '@shared/components/feedback/ErrorMessage';
 
 import { authRegister } from '@modules/auth/state/thunks';
@@ -39,16 +39,18 @@ export default function RegisterScreen() {
 
   const onSubmit = async (data: RegisterFormData) => {
     if (authError) dispatch(resetAuthError());
-    const username = data.email.split('@')[0];
-    const res = await dispatch(authRegister({ username, email: data.email, password: data.password }));
+    const email = data.email ?? '';
+    const password = data.password ?? '';
+    const username = (email.split('@')[0] ?? '') as string;
+    const res = await dispatch(authRegister({ username, email, password }));
     if (authRegister.rejected.match(res)) return;
     // guard redireciona após token
   };
 
   return (
-    <BaseScreen>
+    <AuthBaseScreen>
       <View style={styles.container}>
-        <Input
+        <FormInput
           name="email"
           control={control}
           placeholder="E-mail"
@@ -58,7 +60,7 @@ export default function RegisterScreen() {
           returnKeyType="next"
           error={errors.email?.message}
         />
-        <Input
+        <FormInput
           name="password"
           control={control}
           placeholder="Senha"
@@ -80,7 +82,7 @@ export default function RegisterScreen() {
           Entrar na conta
         </Link>
       </View>
-    </BaseScreen>
+    </AuthBaseScreen>
   );
 }
 

@@ -7,14 +7,13 @@ import * as z from 'zod';
 import { Link } from 'expo-router';
 
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import BaseScreen from '@shared/components/layout/BaseScreen';
-import Input from '@shared/components/ui/Input';
-import Button from '@shared/components/ui/Button';
+import AuthBaseScreen from '@shared/components/layout/AuthBaseScreen';
+import FormInput from '@shared/forms/FormInput';
+import Button from '@ds/components/atoms/Button';
 import ErrorMessage from '@shared/components/feedback/ErrorMessage';
 
 import { authLogin } from '@modules/auth/state/thunks';
 import { resetAuthError } from '@modules/auth/state/authSlice';
-import { loadUserByEmail } from '@modules/user/state/thunks';
 
 const schema = z.object({
   email: z.string().email({ message: 'E-mail inválido' }),
@@ -62,14 +61,14 @@ export default function LoginScreen() {
     if (authError) dispatch(resetAuthError());
     const res = await dispatch(authLogin({ identifier: data.email, password: data.password }));
     if (authLogin.rejected.match(res)) return;
-    await dispatch(loadUserByEmail({ email: data.email }));
+    // Perfil já carregado via /api/usuarios/me pelo bootstrap do slice de usuário
     // Guard no layout redireciona
   };
 
   return (
-    <BaseScreen>
+    <AuthBaseScreen>
       <View style={styles.container}>
-        <Input
+        <FormInput
           name="email"
           control={control}
           placeholder="E-mail"
@@ -80,7 +79,7 @@ export default function LoginScreen() {
           error={emailError}         // ✅ só mostra no blur/submit
         />
 
-        <Input
+        <FormInput
           name="password"
           control={control}
           placeholder="Senha"
@@ -105,7 +104,7 @@ export default function LoginScreen() {
           Criar conta
         </Link>
       </View>
-    </BaseScreen>
+    </AuthBaseScreen>
   );
 }
 

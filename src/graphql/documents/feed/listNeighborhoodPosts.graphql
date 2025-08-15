@@ -1,0 +1,13 @@
+# Posts do bairro
+query ListNeighborhoodPosts($bairro: String!, $page: Int = 1, $pageSize: Int = 10) {
+  posts(
+    filters: {
+      condominio: { bairro: { eq: $bairro } }
+      status_post: { eq: "ativo" }
+    }
+    pagination: { page: $page, pageSize: $pageSize }
+    sort: ["data_publicacao:desc", "createdAt:desc"]
+  ) {
+    ...PostFields
+  }
+}

@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { setAuthLoading, setAuthError, setAuthToken, clearAuth } from '@modules/auth/state/authSlice';
 import { setUserProfile } from '@modules/user/state/userSlice';
+import { bootstrapUserFromUsuarioMe } from '@modules/user/state/thunks';
+import type { AppDispatch, RootState } from '@/store';
 
 import { loginRest, type LoginInput } from '@modules/auth/api/login';
 import { registerRest, type RegisterInput } from '@modules/auth/api/register';
-import { getMe, type MeOutput } from '@modules/auth/api/me';
 import type { UserData } from '@shared/types/user';
 
 import {
@@ -12,20 +13,10 @@ import {
   clearAuthToken as clearGraphQLAuthToken,
 } from '@shared/lib/graphqlClient';
 
-// Adapter: MeOutput -> UserData
-function toUserData(me: MeOutput): UserData {
-  return {
-    id: String((me as any)?.documentId ?? (me as any)?.id ?? ''),
-    username: (me as any)?.username ?? '',
-    email: (me as any)?.email ?? '',
-    tipo_usuario: (me as any)?.tipo_usuario ?? 'visitante',
-    condominio: (me as any)?.condominio ?? null,
-    unidade: (me as any)?.unidade ?? null,
-  };
-}
+// Removido: adapter de /users/me. Perfil agora vem de /api/usuarios/me via user thunk.
 
 // LOGIN
-export const authLogin = createAsyncThunk<{ token: string; me: UserData }, LoginInput>(
+export const authLogin = createAsyncThunk<{ token: string; me: UserData }, LoginInput, { dispatch: AppDispatch; state: RootState }>(
   'auth/login',
   async (input, { dispatch, rejectWithValue }) => {
     try {
@@ -36,9 +27,12 @@ export const authLogin = createAsyncThunk<{ token: string; me: UserData }, Login
       dispatch(setAuthToken(jwt));
       setGraphQLAuthToken(jwt);
 
-      const meRaw = await getMe(jwt);
-      const me = toUserData(meRaw);
-      dispatch(setUserProfile(me));
+      // Carrega perfil diretamente do endpoint custom de usuarios
+      const res = await dispatch(bootstrapUserFromUsuarioMe());
+      if (bootstrapUserFromUsuarioMe.rejected.match(res)) {
+        throw new Error('Falha ao carregar perfil');
+      }
+      const me = res.payload as UserData;
 
       return { token: jwt, me };
     } catch (e: any) {
@@ -52,7 +46,7 @@ export const authLogin = createAsyncThunk<{ token: string; me: UserData }, Login
 );
 
 // REGISTER
-export const authRegister = createAsyncThunk<{ token: string }, RegisterInput>(
+export const authRegister = createAsyncThunk<{ token: string }, RegisterInput, { dispatch: AppDispatch; state: RootState }>(
   'auth/register',
   async (input, { dispatch, rejectWithValue }) => {
     try {
@@ -63,9 +57,10 @@ export const authRegister = createAsyncThunk<{ token: string }, RegisterInput>(
       dispatch(setAuthToken(jwt));
       setGraphQLAuthToken(jwt);
 
-      const meRaw = await getMe(jwt);
-      const me = toUserData(meRaw);
-      dispatch(setUserProfile(me));
+      const res = await dispatch(bootstrapUserFromUsuarioMe());
+      if (bootstrapUserFromUsuarioMe.rejected.match(res)) {
+        throw new Error('Falha ao carregar perfil');
+      }
 
       return { token: jwt };
     } catch (e: any) {
@@ -85,3 +80,20 @@ export const authLogout = createAsyncThunk('auth/logout', async (_, { dispatch }
   clearGraphQLAuthToken();
   return true;
 });
+
+// REFRESH ME (usar em focos/reloads)
+export const refreshMe = createAsyncThunk<UserData | null, void, { dispatch: AppDispatch; state: RootState }>(
+  'auth/refreshMe',
+  async (_: void, { getState, dispatch }) => {
+    const token: string | null = getState()?.auth?.token ?? null;
+    if (!token) return null;
+    try {
+      const res = await dispatch(bootstrapUserFromUsuarioMe());
+      if (bootstrapUserFromUsuarioMe.rejected.match(res)) return null;
+      return (res.payload as UserData) ?? null;
+    } catch {
+      // mantém perfil atual se falhar
+      return null;
+    }
+  }
+);

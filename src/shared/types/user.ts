@@ -11,6 +11,10 @@ export type TipoUsuario =
 export interface CondominioRef {
   id: string; // documentId do Strapi
   nome: string;
+  bairro?: string; // opcional: usado para aba "Bairro"
+  latitude?: number; // opcional: proximidade
+  longitude?: number; // opcional: proximidade
+  raio_atuacao?: number; // opcional: proximidade
 }
 
 export interface UserData {
@@ -20,5 +24,4 @@ export interface UserData {
   email: string;
   tipo_usuario: TipoUsuario;
   condominio: CondominioRef | null;
-  unidade: string | null;
 }

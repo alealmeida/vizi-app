@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ViewStyle } from 'react-native';
+import { Pressable, ViewStyle } from 'react-native';
+import Box from '@ds/components/primitives/Box';
+import Text from '@ds/components/primitives/Text';
+import Card from '@ds/components/molecules/Card';
+import { useTheme } from '@shopify/restyle';
+import type { Theme } from '@ds/theme';
 import { formatTimeAgoPt } from '@shared/utils/date';
 import type { PostFieldsFragment } from '@graphql/__generated__/types';
 
@@ -11,21 +16,21 @@ export type PostCardProps = {
   showExcerpt?: boolean;
 };
 
-type BadgeCfg = { label: string; bg: string; fg: string };
+type BadgeCfg = { label: string; kind: 'brand' | 'success' | 'warning' | 'danger' | 'info' };
 const TIPO_BADGE: Record<string, BadgeCfg> = {
-  venda:    { label: 'Venda',    bg: '#EEF2FF', fg: '#3741D8' },
-  troca:    { label: 'Troca',    bg: '#F0FDFA', fg: '#047857' },
-  doacao:   { label: 'Doação',   bg: '#FDF2F8', fg: '#BE185D' },
-  pedido:   { label: 'Pedido',   bg: '#FFF7ED', fg: '#C2410C' },
-  campanha: { label: 'Campanha', bg: '#F5F3FF', fg: '#6D28D9' },
-  evento:   { label: 'Evento',   bg: '#ECFEFF', fg: '#155E75' },
-  servico:  { label: 'Serviço',  bg: '#F0F9FF', fg: '#075985' },
+  venda:    { label: 'Venda',    kind: 'brand' },
+  troca:    { label: 'Troca',    kind: 'success' },
+  doacao:   { label: 'Doação',   kind: 'info' },
+  pedido:   { label: 'Pedido',   kind: 'warning' },
+  campanha: { label: 'Campanha', kind: 'info' },
+  evento:   { label: 'Evento',   kind: 'info' },
+  servico:  { label: 'Serviço',  kind: 'brand' },
 };
 
-const STATUS_STYLE: Record<string, { bg: string; fg: string; label: string }> = {
-  ativo:    { bg: '#ECFDF5', fg: '#065F46', label: 'Ativo' },
-  expirado: { bg: '#FEF3C7', fg: '#92400E', label: 'Expirado' },
-  removido: { bg: '#FEE2E2', fg: '#991B1B', label: 'Removido' },
+const STATUS_STYLE: Record<string, { label: string; kind: 'success' | 'warning' | 'danger' } > = {
+  ativo:    { label: 'Ativo',    kind: 'success' },
+  expirado: { label: 'Expirado', kind: 'warning' },
+  removido: { label: 'Removido', kind: 'danger' },
 };
 
 function formatBRL(value?: number | null) {
@@ -37,12 +42,56 @@ function formatBRL(value?: number | null) {
   }
 }
 
-export default function PostCard({
+function Chip({ label, kind }: { label: string; kind: 'brand' | 'success' | 'warning' | 'danger' | 'info' }) {
+  type BgKey = 'brandSubtle' | 'successSubtle' | 'warningSubtle' | 'dangerSubtle' | 'infoSubtle';
+  type FgKey = 'brand' | 'success' | 'warning' | 'danger' | 'info';
+  const bgMap: Record<BgKey | FgKey, BgKey> = {
+    brand: 'brandSubtle',
+    success: 'successSubtle',
+    warning: 'warningSubtle',
+    danger: 'dangerSubtle',
+    info: 'infoSubtle',
+    brandSubtle: 'brandSubtle',
+    successSubtle: 'successSubtle',
+    warningSubtle: 'warningSubtle',
+    dangerSubtle: 'dangerSubtle',
+    infoSubtle: 'infoSubtle',
+  };
+  const fgMap: Record<'brand' | 'success' | 'warning' | 'danger' | 'info', FgKey> = {
+    brand: 'brand',
+    success: 'success',
+    warning: 'warning',
+    danger: 'danger',
+    info: 'info',
+  };
+  const bgKey = bgMap[kind];
+  const fgKey = fgMap[kind];
+  return (
+    <Box backgroundColor={bgKey} borderRadius="pill" style={{ paddingVertical: 4, paddingHorizontal: 8 }}>
+      <Text style={{ fontSize: 12, fontWeight: '700' }} color={fgKey}>
+        {label}
+      </Text>
+    </Box>
+  );
+}
+
+function PricePill({ label }: { label: string }) {
+  return (
+    <Box alignSelf="flex-start" borderRadius="pill" paddingHorizontal="md" paddingVertical="xs" backgroundColor="bgMuted">
+      <Text style={{ fontSize: 12, fontWeight: '700' }} color="textPrimary">
+        {label}
+      </Text>
+    </Box>
+  );
+}
+
+function PostCard({
   post,
   onPress,
   style,
   showExcerpt = false,
 }: PostCardProps) {
+  const theme = useTheme<Theme>();
   if (!post) return null;
 
   // tempo: prioriza data_publicacao; fallback createdAt
@@ -62,74 +111,58 @@ export default function PostCard({
 
   const metaParts = [autor, condo || undefined, when || undefined].filter(Boolean);
 
-  const Wrapper: any = onPress ? Pressable : View;
+  const Wrapper: any = onPress ? Pressable : React.Fragment;
+  const wrapperProps = onPress ? { onPress } : {};
 
-  return (
-    <Wrapper style={[styles.card, style]} onPress={onPress}>
+  const content = (
+    <Card padding="xl" backgroundColor={"bgCanvas" as any} borderWidth={0} elevation={0}>
       {/* Título */}
-      <Text style={styles.title} numberOfLines={2}>
+      <Text variant="title" numberOfLines={2}>
         {post.titulo ?? 'Sem título'}
       </Text>
 
       {/* Meta (autor • condomínio • há …) */}
       {metaParts.length > 0 && (
-        <Text style={styles.meta} numberOfLines={1}>
-          {metaParts.join(' • ')}
-        </Text>
+        <Box style={{ marginTop: theme.spacing.sm }}>
+          <Text variant="caption" numberOfLines={1}>
+            {metaParts.join(' • ')}
+          </Text>
+        </Box>
       )}
 
       {/* Badges (tipo, status) + preço */}
-      <View style={styles.badgesRow}>
-        {tipoBadge && (
-          <View style={[styles.badge, { backgroundColor: tipoBadge.bg }]}>
-            <Text style={[styles.badgeText, { color: tipoBadge.fg }]}>{tipoBadge.label}</Text>
-          </View>
-        )}
-        {statusChip && (
-          <View style={[styles.chip, { backgroundColor: statusChip.bg }]}>
-            <Text style={[styles.chipText, { color: statusChip.fg }]}>{statusChip.label}</Text>
-          </View>
-        )}
-        {precoLabel && (
-          <View style={styles.pricePill}>
-            <Text style={styles.priceText}>{precoLabel}</Text>
-          </View>
-        )}
-      </View>
+      <Box
+        flexDirection="row"
+        flexWrap="wrap"
+        marginTop="md"
+        alignItems="center"
+        style={{ gap: theme.spacing.sm }}
+      >
+        {tipoBadge && <Chip label={tipoBadge.label} kind={tipoBadge.kind} />}
+        {statusChip && <Chip label={statusChip.label} kind={statusChip.kind} />}
+        {precoLabel && <PricePill label={precoLabel} />}
+      </Box>
 
       {/* Excerpt opcional (no feed fica false) */}
       {showExcerpt && !!post.conteudo && (
-        <Text style={styles.body} numberOfLines={3}>
-          {post.conteudo}
-        </Text>
+        <Box style={{ marginTop: theme.spacing.md }}>
+          <Text variant="body" numberOfLines={3}>
+            {post.conteudo}
+          </Text>
+        </Box>
       )}
-    </Wrapper>
+    </Card>
+  );
+
+  return (
+    <Box style={style} marginBottom="md">
+      {onPress ? (
+        <Wrapper {...wrapperProps}>{content}</Wrapper>
+      ) : (
+        content
+      )}
+    </Box>
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#eee',
-    borderRadius: 12,
-    marginBottom: 12,
-    backgroundColor: '#fff',
-  },
-  title: { fontWeight: '600', fontSize: 16 },
-  meta: { marginTop: 6, fontSize: 12, opacity: 0.6 },
-  badgesRow: { flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap' },
-  badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
-  badgeText: { fontSize: 12, fontWeight: '700' },
-  chip: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 999 },
-  chipText: { fontSize: 12, fontWeight: '700' },
-  pricePill: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#F1F5F9',
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-  },
-  priceText: { fontSize: 12, fontWeight: '700', color: '#0F172A' },
-  body: { marginTop: 10, fontSize: 14, lineHeight: 20 },
-});
+export default React.memo(PostCard);

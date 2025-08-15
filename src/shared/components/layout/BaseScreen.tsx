@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
-import { SafeAreaView, View, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native'
+import Box from '@ds/components/primitives/Box'
 
 interface Props {
   children: ReactNode
@@ -7,20 +8,10 @@ interface Props {
 
 export default function BaseScreen({ children }: Props) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>{children}</View>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Box flex={1} backgroundColor="bgCanvas" padding="xl" justifyContent="center">
+        {children}
+      </Box>
     </SafeAreaView>
   )
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-  },
-})
