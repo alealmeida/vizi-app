@@ -36,11 +36,7 @@ export default function ProfileScreen() {
     setMode(next);
   }
 
-  // Log de diagnóstico do perfil na tela
-  React.useEffect(() => {
-    // Evita logar demais quando nulo e sem token
-    console.log('[ProfileScreen] user changed:', user);
-  }, [user]);
+  // logs removidos
 
   // Garante que o perfil está atualizado ao focar a tela
   useFocusEffect(

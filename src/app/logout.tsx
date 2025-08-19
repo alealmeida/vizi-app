@@ -10,7 +10,6 @@ export default function LogoutRoute() {
     (async () => {
       try { await AsyncStorage.removeItem('persist:vizi-root'); } catch {}
       store.dispatch(authLogout()); // <- não depende de Provider
-      console.log('[logout] dispatched authLogout()');
     })();
   }, []);
   return <Redirect href="/(auth)/login" />;

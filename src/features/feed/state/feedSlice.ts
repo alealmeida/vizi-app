@@ -25,6 +25,25 @@ const slice = createSlice({
     resetFeed: () => initialState,
   },
   extraReducers: (b) => {
+    // Specific rejected handlers keep tailored error messages
+    b.addCase(loadFeed.rejected, (s, a) => {
+      s.loading = false;
+      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed';
+    });
+    b.addCase(loadMyCondoFeed.rejected, (s, a) => {
+      s.loading = false;
+      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed do condomínio';
+    });
+    b.addCase(loadNeighborhoodFeed.rejected, (s, a) => {
+      s.loading = false;
+      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed do bairro';
+    });
+    b.addCase(loadNearbyFeed.rejected, (s, a) => {
+      s.loading = false;
+      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed próximo';
+    });
+
+    // Matchers must come AFTER all addCase calls per RTK builder rules
     b.addMatcher(
       isAnyOf(
         loadFeed.pending,
@@ -51,24 +70,6 @@ const slice = createSlice({
         s.items = next;
       }
     );
-
-    // Specific rejected handlers keep tailored error messages
-    b.addCase(loadFeed.rejected, (s, a) => {
-      s.loading = false;
-      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed';
-    });
-    b.addCase(loadMyCondoFeed.rejected, (s, a) => {
-      s.loading = false;
-      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed do condomínio';
-    });
-    b.addCase(loadNeighborhoodFeed.rejected, (s, a) => {
-      s.loading = false;
-      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed do bairro';
-    });
-    b.addCase(loadNearbyFeed.rejected, (s, a) => {
-      s.loading = false;
-      s.error = (a.payload as string) ?? a.error.message ?? 'Erro ao carregar feed próximo';
-    });
   },
 });
 

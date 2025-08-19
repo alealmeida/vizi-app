@@ -4,8 +4,18 @@ query ListNearbyPosts(
   $radiusKm: Float! = 5
   $page: Int = 1
   $pageSize: Int = 10
+  $excludeCondoId: String
+  $minItems: Int
 ) {
-  nearbyPosts(lat: $lat, lng: $lng, radiusKm: $radiusKm, page: $page, pageSize: $pageSize) {
+  nearbyPosts(
+    lat: $lat
+    lng: $lng
+    radiusKm: $radiusKm
+    page: $page
+    pageSize: $pageSize
+    excludeCondoId: $excludeCondoId
+    minItems: $minItems
+  ) {
     ...PostFields
   }
 }

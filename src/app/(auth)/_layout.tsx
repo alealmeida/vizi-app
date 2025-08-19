@@ -1,7 +1,7 @@
 // src/app/(auth)/_layout.tsx
 import React from 'react';
 import { Stack } from 'expo-router';
-import { AuthNavProvider } from './AuthNavContext';
+import { AuthNavProvider } from './_components/AuthNavContext';
 
 export default function AuthLayout() {
   return (

@@ -29,10 +29,6 @@ function AuthGateInner() {
   const atRoot = !inAuth && !inTabs && !inModals;
 
   useEffect(() => {
-    // logs úteis (apenas em dev)
-    if (__DEV__) {
-      console.log('[AuthGate]', { token: !!token, segments, group, atRoot });
-    }
     if (!token && (inTabs || inModals || atRoot)) {
       router.replace('/(auth)/login');
     } else if (token && (inAuth || atRoot)) {

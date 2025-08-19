@@ -41,7 +41,6 @@ export default function FeedScreen() {
   // (see toUserDataFromUsuario). We use this as the condo identifier across
   // queries that expect documentId.
   const condoId = user?.condominio?.id;
-  console.log('[Feed] condo identity', { condoId, condoName });
   const bairro = user?.condominio?.bairro;
   const condoLatRaw = user?.condominio?.latitude as any;
   const condoLngRaw = user?.condominio?.longitude as any;
@@ -69,10 +68,6 @@ export default function FeedScreen() {
     return true;
   }, [tab, condoId]);
 
-  // Logs de estado base a cada render relevante
-  console.log('[Feed] tab=proximos', { condoLat, condoLng, hasLocation, radius: NEARBY_RADIUS_KM, excludeCondoId: condoId });
-  console.log('[Feed] tab=bairro', { condoLat, condoLng, hasLocation, radius: BAIRRO_RADIUS_KM, excludeCondoId: condoId });
-
   // Garante que temos o perfil mais recente ao focar a tela
   useFocusEffect(
     React.useCallback(() => {
@@ -91,14 +86,11 @@ export default function FeedScreen() {
     if (tab === 'meu') {
       if (!condoId) return;
       try {
-        console.log('[Feed] fetchPage: meu', { page, pageSize: size, condoId });
         const res = await dispatch(
           loadMyCondoFeed({ condominioId: condoId, page, pageSize: size })
         ).unwrap();
-        console.log('[Feed] fetchPage: meu result', { condoId, length: res?.length ?? 0 });
         // Debug: listar os condomínios retornados para validar filtro
         const debugMap = (res ?? []).slice(0, 20).map((p) => ({ id: p?.documentId, condId: p?.condominio?.documentId, condNome: p?.condominio?.nome }));
-        console.log('[Feed] meu DEBUG posts->condominio', debugMap);
       } catch (err) {
         console.error('[Feed] fetchPage: meu error', err);
       }
@@ -106,15 +98,12 @@ export default function FeedScreen() {
     }
     if (tab === 'bairro') {
       if (!hasLocation) {
-        console.log('[Feed] fetchPage: bairro skipped (no location)');
         return;
       }
       try {
-        console.log('[Feed] fetchPage: bairro', { page, pageSize: size, lat: condoLat, lng: condoLng, radiusKm: BAIRRO_RADIUS_KM });
         const res = await dispatch(
           loadNearbyFeed({ lat: condoLat, lng: condoLng, radiusKm: BAIRRO_RADIUS_KM, page, pageSize: size })
         ).unwrap();
-        console.log('[Feed] fetchPage: bairro result', { length: res?.length ?? 0 });
         // Sem fallback: se não houver posts, fica vazio
       } catch (err) {
         console.error('[Feed] fetchPage: bairro error', err);
@@ -125,14 +114,11 @@ export default function FeedScreen() {
     // proximos
     try {
       if (hasLocation) {
-        console.log('[Feed] fetchPage: proximos', { page, pageSize: size, lat: condoLat, lng: condoLng, radiusKm: NEARBY_RADIUS_KM, excludeCondoId: condoId });
         // Passa excludeCondoId e minItems para o thunk aplicar exclusão e backfill automático
         const res = await dispatch(
           loadNearbyFeed({ lat: condoLat, lng: condoLng, radiusKm: NEARBY_RADIUS_KM, page, pageSize: size, excludeCondoId: condoId, minItems: NEARBY_MIN_ITEMS })
         ).unwrap();
-        console.log('[Feed] fetchPage: proximos result (with backfill)', { length: res?.length ?? 0 });
       } else {
-        console.log('[Feed] fetchPage: proximos skipped (no location)');
         // Sem localização: não carrega feed genérico
       }
     } catch (err) {
@@ -199,13 +185,11 @@ export default function FeedScreen() {
     if (nextPage <= 1) return; // evita repedir página 1
     if (tab === 'bairro') {
       if (!hasLocation) return;
-      console.log('[Feed] onEndReached: bairro', { nextPage, pageSize: size, lat: condoLat, lng: condoLng, radiusKm: BAIRRO_RADIUS_KM });
       return dispatch(
         loadNearbyFeed({ lat: condoLat, lng: condoLng, radiusKm: BAIRRO_RADIUS_KM, page: nextPage, pageSize: size })
       );
     }
     if (hasLocation) {
-      console.log('[Feed] onEndReached: proximos', { nextPage, pageSize: size, lat: condoLat, lng: condoLng, radiusKm: NEARBY_RADIUS_KM, excludeCondoId: condoId });
       return dispatch(
         loadNearbyFeed({ lat: condoLat, lng: condoLng, radiusKm: NEARBY_RADIUS_KM, page: nextPage, pageSize: size, excludeCondoId: condoId })
       );

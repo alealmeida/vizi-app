@@ -140,7 +140,6 @@ export const bootstrapUserFromUsuarioMe = createAsyncThunk<
   const token = getState().auth.token;
   if (!token) return null;
   try {
-    console.log('[bootstrapUserFromUsuarioMe] start, hasToken:', !!token);
     dispatch(setUserLoading(true));
     dispatch(setUserError(null));
 
@@ -150,21 +149,17 @@ export const bootstrapUserFromUsuarioMe = createAsyncThunk<
     });
     if (!meResp.ok) throw new Error(`/api/users/me falhou: ${meResp.status}`);
     const me = await meResp.json();
-    console.log('[bootstrapUserFromUsuarioMe] me:', me);
 
     // 2) Buscar registro em 'usuarios' relacionado ao user
     const uResp = await fetchUsuarioByUser(token, { id: Number(me.id), documentId: me.documentId });
     let list: any[] = [];
     if (!uResp.ok) {
       const body = await uResp.text();
-      console.log('[bootstrapUserFromUsuarioMe] /api/usuarios not ok, continuing with empty list:', uResp.status, body);
     } else {
       const raw = await uResp.json();
       list = unwrapStrapiList(raw);
-      console.log('[bootstrapUserFromUsuarioMe] usuarios list length:', list.length);
     }
     const node: UsuarioRest | null = findUsuarioMatch(list, { id: Number(me.id), documentId: me.documentId, username: me.username, email: me.email });
-    console.log('[bootstrapUserFromUsuarioMe] usuario node:', node);
 
     const mapped = node ? toUserDataFromUsuario(node) : ({
       id: String(me.documentId ?? me.id),
@@ -181,20 +176,16 @@ export const bootstrapUserFromUsuarioMe = createAsyncThunk<
 
     const prev = getState().user.profile;
     if (userShallowEqual(prev, mapped)) {
-      console.log('[bootstrapUserFromUsuarioMe] mapped equals prev, skip update');
       return prev;
     }
-    console.log('[bootstrapUserFromUsuarioMe] mapped user (will update):', mapped);
     dispatch(setUserProfile(mapped));
     return mapped;
   } catch (e: any) {
     const msg = e?.message ?? 'Falha ao carregar perfil';
-    console.log('[bootstrapUserFromUsuarioMe] error:', msg);
     dispatch(setUserError(msg));
     return null;
   } finally {
     dispatch(setUserLoading(false));
-    console.log('[bootstrapUserFromUsuarioMe] end');
   }
 });
 
@@ -261,7 +252,6 @@ export const loadUserExpanded = createAsyncThunk<
   const curr = state.user.profile;
   if (!token || !curr?.id) return null;
   try {
-    console.log('[loadUserExpanded] curr:', curr);
     dispatch(setUserLoading(true));
     dispatch(setUserError(null));
 
@@ -277,24 +267,19 @@ export const loadUserExpanded = createAsyncThunk<
     let list: any[] = [];
     if (!uResp.ok) {
       const body = await uResp.text();
-      console.log('[loadUserExpanded] /api/usuarios not ok, continuing with empty list:', uResp.status, body);
     } else {
       const raw = await uResp.json();
       list = unwrapStrapiList(raw);
-      console.log('[loadUserExpanded] usuarios list length:', list.length);
     }
     const node: UsuarioRest | null = findUsuarioMatch(list, { id: Number(me.id), documentId: me.documentId, username: me.username, email: me.email });
-    console.log('[loadUserExpanded] usuario node:', node);
+
     if (!node) {
       const fallback = { ...curr } as UserData;
       fallback.username = fallback.username || String(me.username ?? '');
       fallback.email = fallback.email || String(me.email ?? '');
-      console.log('[loadUserExpanded] no usuario record, fallback visitante:', fallback);
       if (userShallowEqual(curr, fallback)) {
-        console.log('[loadUserExpanded] fallback equals curr, skip update');
         return curr;
       }
-      console.log('[loadUserExpanded] fallback (will update):', fallback);
       dispatch(setUserProfile(fallback));
       return fallback;
     }
@@ -319,19 +304,15 @@ export const loadUserExpanded = createAsyncThunk<
     } as UserData;
 
     if (userShallowEqual(curr, updated)) {
-      console.log('[loadUserExpanded] no changes, skip update');
       return curr;
     }
-    console.log('[loadUserExpanded] updated (will update state):', updated);
     dispatch(setUserProfile(updated));
     return updated;
   } catch (e: any) {
     const msg = e?.message ?? 'Falha ao carregar usuário (expanded)';
-    console.log('[loadUserExpanded] error:', msg);
     dispatch(setUserError(msg));
     return null;
   } finally {
     dispatch(setUserLoading(false));
-    console.log('[loadUserExpanded] end');
   }
 });

@@ -1,4 +1,4 @@
-// src/app/(auth)/AuthNavContext.tsx
+// src/app/(auth)/_components/AuthNavContext.tsx
 import React, { createContext, useContext, useMemo, useRef, useEffect } from 'react';
 import { useSegments } from 'expo-router';
 
