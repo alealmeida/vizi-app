@@ -1,10 +1,10 @@
 import React from 'react';
 import { TextInput, NativeSyntheticEvent, TextInputFocusEventData, TextInputProps } from 'react-native';
 import { Controller, Control } from 'react-hook-form';
-import Box from '@ds/components/primitives/Box';
-import Text from '@ds/components/primitives/Text';
+import Box from '@ui/components/primitives/Box';
+import Text from '@ui/components/primitives/Text';
 import { useTheme } from '@shopify/restyle';
-import type { Theme } from '@ds/theme';
+import type { Theme } from '@ui/theme';
 
 export type FormInputBaseProps = TextInputProps & {
   error?: string | undefined;

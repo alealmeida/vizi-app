@@ -11,10 +11,11 @@ module.exports = function (api) {
           alias: {
             '@': './src',
             '@app': './src/app',
-            '@modules': './src/modules',
+            '@features': './src/features',
             '@shared': './src/shared',
             '@graphql': './src/graphql',
             '@store': './src/store',
+            '@ui': './src/ui',
             '@assets': './src/assets'
           }
         }

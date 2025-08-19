@@ -2,7 +2,7 @@
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Box from '@ds/components/primitives/Box';
+import Box from '@ui/components/primitives/Box';
 
 export type AuthBaseScreenProps = {
   children: React.ReactNode;

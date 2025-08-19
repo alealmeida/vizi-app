@@ -1,0 +1,11 @@
+query ListNearbyPosts(
+  $lat: Float!
+  $lng: Float!
+  $radiusKm: Float! = 5
+  $page: Int = 1
+  $pageSize: Int = 10
+) {
+  nearbyPosts(lat: $lat, lng: $lng, radiusKm: $radiusKm, page: $page, pageSize: $pageSize) {
+    ...PostFields
+  }
+}

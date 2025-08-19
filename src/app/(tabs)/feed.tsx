@@ -1,6 +1,6 @@
 // src/app/(tabs)/feed.tsx
 import React, { useEffect } from 'react';
-import FeedScreen from '@modules/feed/screens/FeedScreen';
+import FeedScreen from '@features/feed/screens/FeedScreen';
 
 export default function FeedRoute() {
   useEffect(() => {

@@ -1,7 +1,7 @@
 // src/store/selectors.ts
 import type { RootState } from './index';
 import type { UserData } from '@shared/types/user';
-import type { MinimalPost } from '@modules/feed/api/listPosts';
+import type { MinimalPost } from '@features/feed/api/listPosts';
 
 // Auth
 export const selectAuthToken = (state: RootState): string | null => state.auth.token;

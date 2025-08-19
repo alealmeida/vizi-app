@@ -1,6 +1,6 @@
 // src/app/(auth)/register.tsx
 import React, { useEffect } from 'react';
-import RegisterScreen from '@modules/auth/screens/RegisterScreen';
+import RegisterScreen from '@features/auth/screens/RegisterScreen';
 import SlideFade from './components/SlideFade';
 import { useAuthNav } from './AuthNavContext';
 

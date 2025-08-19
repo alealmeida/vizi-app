@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { resolveTabs, type TabsContext } from '@shared/config/tabs';
 import { selectAuthToken, selectUserProfile, selectFeedUnread } from '@store/selectors';
-import { refreshMe } from '@modules/auth/state/thunks';
+import { refreshMe } from '@features/auth/state/thunks';
 
 // grupos dentro de (tabs) onde a tab bar NÃO deve aparecer
 const HIDE_TAB_GROUPS = new Set(['post']); // ex.: (tabs)/post/[documentId]

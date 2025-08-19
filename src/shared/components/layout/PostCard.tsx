@@ -1,10 +1,10 @@
 import React from 'react';
 import { Pressable, ViewStyle } from 'react-native';
-import Box from '@ds/components/primitives/Box';
-import Text from '@ds/components/primitives/Text';
-import Card from '@ds/components/molecules/Card';
+import Box from '@ui/components/primitives/Box';
+import Text from '@ui/components/primitives/Text';
+import Card from '@ui/components/molecules/Card';
 import { useTheme } from '@shopify/restyle';
-import type { Theme } from '@ds/theme';
+import type { Theme } from '@ui/theme';
 import { formatTimeAgoPt } from '@shared/utils/date';
 import type { PostFieldsFragment } from '@graphql/__generated__/types';
 
@@ -101,6 +101,7 @@ function PostCard({
 
   const autor = post.criador_post?.username || post.criador_post?.email || 'Anônimo';
   const condo = post.condominio?.nome || null;
+  const condoId = post.condominio?.documentId || null;
 
   const precoLabel = formatBRL(post.preco);
   const tipoKey = (post.tipo_post ?? '').toString();
@@ -110,6 +111,8 @@ function PostCard({
   const statusChip = STATUS_STYLE[statusKey];
 
   const metaParts = [autor, condo || undefined, when || undefined].filter(Boolean);
+  const metaJoined = metaParts.join(' • ');
+  const metaDebug = __DEV__ && condoId ? `${metaJoined}  ·  [condoId: ${condoId}]` : metaJoined;
 
   const Wrapper: any = onPress ? Pressable : React.Fragment;
   const wrapperProps = onPress ? { onPress } : {};
@@ -125,7 +128,7 @@ function PostCard({
       {metaParts.length > 0 && (
         <Box style={{ marginTop: theme.spacing.sm }}>
           <Text variant="caption" numberOfLines={1}>
-            {metaParts.join(' • ')}
+            {metaDebug}
           </Text>
         </Box>
       )}

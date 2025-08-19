@@ -24,15 +24,15 @@
       "@/*": ["*"],
 
       "@app/*": ["app/*"],
-      "@modules/*": ["modules/*"],
+      "@features/*": ["features/*"],
       "@shared/*": ["shared/*"],
       "@graphql": ["graphql"],
       "@graphql/*": ["graphql/*"],
       "@store": ["store/index.ts"],
       "@store/*": ["store/*"],
       "@assets/*": ["assets/*"],
-      "@ds/*": ["design-system/*"],
-      "@ds": ["design-system/index.ts"]
+      "@ui": ["ui/index.ts"],
+      "@ui/*": ["ui/*"]
     },
 
     // TS strictness extra

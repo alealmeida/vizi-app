@@ -4,7 +4,7 @@ query UsuarioByUserDoc($userDocumentId: ID!) {
     filters: { user: { documentId: { eq: $userDocumentId } } }
     sort: ["createdAt:desc"]
   ) {
-    ...UsuarioFields
+    ...UserFields
   }
 }
 

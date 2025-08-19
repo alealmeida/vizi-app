@@ -1,9 +1,17 @@
 # Fragmento com campos principais do content-type Usuario
-fragment UsuarioFields on Usuario {
+fragment UserFields on Usuario {
   documentId
   username
   email
   tipo_usuario
   condominio { documentId nome bairro }
   user { documentId email username }
+}
+
+# Fragment para dados básicos do usuário
+fragment UserBasicFields on Usuario {
+  documentId
+  username
+  email
+  tipo_usuario
 }

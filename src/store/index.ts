@@ -13,9 +13,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // opcional: se estiver usando filtros, mantenha-os aqui
 // import { createFilter } from 'redux-persist-transform-filter';
 
-import authReducer from '@modules/auth/state/authSlice';
-import userReducer from '@modules/user/state/userSlice';
-import feedReducer from '@modules/feed/state/feedSlice';
+import authReducer from '@features/auth/state/authSlice';
+import userReducer from '@features/user/state/userSlice';
+import feedReducer from '@features/feed/state/feedSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,

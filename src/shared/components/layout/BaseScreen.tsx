@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 import { SafeAreaView } from 'react-native'
-import Box from '@ds/components/primitives/Box'
+import Box from '@ui/components/primitives/Box'
 
 interface Props {
   children: ReactNode

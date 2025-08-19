@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { FlatList, RefreshControl, ListRenderItem, ActivityIndicator } from 'react-native';
-import Box from '@ds/components/primitives/Box';
-import Text from '@ds/components/primitives/Text';
+import Box from '@ui/components/primitives/Box';
+import Text from '@ui/components/primitives/Text';
 import PostCard, { type PostCardProps } from '@shared/components/layout/PostCard';
 import type { PostFieldsFragment } from '@graphql/__generated__/types';
 import { useTheme } from '@shopify/restyle';
-import type { Theme } from '@ds/theme';
+import type { Theme } from '@ui/theme';
 
 type PostItem = (PostFieldsFragment & { conteudo?: string | null }) | null;
 

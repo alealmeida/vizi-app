@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import BaseScreen from '@shared/components/layout/BaseScreen';
-import Button from '@ds/components/atoms/Button';
+import Button from '@ui/components/atoms/Button';
 import { getGraphQLClient } from '@shared/lib/graphqlClient';
 import {
   GetPostByDocumentIdDocument,

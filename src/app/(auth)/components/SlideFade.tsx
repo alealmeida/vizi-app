@@ -1,7 +1,7 @@
 // src/app/(auth)/components/SlideFade.tsx
 import React, { useEffect, useRef } from 'react';
 import { Animated, StyleProp, ViewStyle } from 'react-native';
-import { motion } from '@ds';
+import { motion } from '@ui';
 
 export type SlideFadeDirection = 'forward' | 'back' | 'none';
 

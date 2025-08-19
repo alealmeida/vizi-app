@@ -8,7 +8,7 @@ import { Slot, useSegments, useRouter } from 'expo-router';
 import { useAppSelector } from '@store/hooks';
 import { setAuthToken as setGqlToken } from '@shared/lib/graphqlClient';
 import { selectAuthToken } from '@store/selectors';
-import { DSProvider } from '@ds/theme/provider';
+import { DSProvider } from '@ui/theme/provider';
 
 function AuthGateInner() {
   const router = useRouter();
